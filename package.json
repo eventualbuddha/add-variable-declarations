@@ -1,0 +1,49 @@
+{
+  "name": "add-variable-declarations",
+  "version": "1.0.0",
+  "description": "Add variable declarations for global assignments.",
+  "main": "dist/add-variable-declarations.umd.js",
+  "jsnext:main": "dist/add-variable-declarations.es.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "rollup -c rollup.config.es.js && rollup -c rollup.config.umd.js",
+    "test": "mocha --compilers js:babel-register",
+    "prepublish": "npm run build"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eventualbuddha/add-variable-declarations.git"
+  },
+  "keywords": [
+    "variable",
+    "declaration",
+    "ast",
+    "refactor"
+  ],
+  "author": "Brian Donovan <me@brian-donovan.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eventualbuddha/add-variable-declarations/issues"
+  },
+  "homepage": "https://github.com/eventualbuddha/add-variable-declarations",
+  "devDependencies": {
+    "babel-plugin-syntax-flow": "^6.5.0",
+    "babel-plugin-transform-flow-strip-types": "^6.5.0",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-es2015-rollup": "^1.1.1",
+    "babel-register": "^6.5.1",
+    "mocha": "^2.4.5",
+    "rollup": "^0.25.3",
+    "rollup-plugin-babel": "^2.3.9"
+  },
+  "dependencies": {
+    "babel-traverse": "^6.5.0",
+    "babylon": "^6.5.0",
+    "magic-string": "^0.10.2"
+  }
+}
