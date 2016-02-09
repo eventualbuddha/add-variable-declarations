@@ -44,7 +44,12 @@ export default function addVariableDeclarations(source: string, editor: MagicStr
         getParenthesesRanges(node, ast.tokens).forEach(({ start, end }) => editor.remove(start, end));
         editor.insert(node.start, 'var ');
       } else {
-        let firstStatement = getFirstStatementInBlock(path.scope.block);
+        let insertionScope = path.scope;
+        let firstStatement;
+        do {
+          firstStatement = getFirstStatementInBlock(insertionScope.block);
+          insertionScope = insertionScope.parent;
+        } while (!firstStatement);
         editor.insert(
           firstStatement.start,
           buildDeclarationForNames(newNames, source, firstStatement.start)
