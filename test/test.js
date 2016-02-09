@@ -10,7 +10,7 @@ function testFixture(name) {
   it(config.description, () => {
     let input = readFixtureFile(name, 'input.js');
     let actual = refactor(input);
-    writeFixtureFile(name, '_actual.js');
+    writeFixtureFile(name, '_actual.js', actual.code);
     let expected = config.noop ? input : readFixtureFile(name, 'expected.js');
     eq(actual.code, expected);
   });
