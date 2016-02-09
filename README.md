@@ -32,7 +32,7 @@ declarations to converted CoffeeScript code. This project is not intended to
 allow you to write JavaScript without variable declarations, as I consider that
 a bad practice for the same reasons it's a bad practice in CoffeeScript.
 
-[decaffeinate]: https://github.com/eventualbuddha/decaffeinate
+[decaffeinate]: https://github.com/decaffeinate/decaffeinate
 
 ## License
 
