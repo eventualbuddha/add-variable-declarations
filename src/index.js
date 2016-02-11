@@ -9,7 +9,15 @@ import type NodePath from 'babel-traverse/src/path/index.js';
 import type { Node, Token, SourceMap } from './types.js';
 import { parse } from 'babylon';
 
-export default function addVariableDeclarations(source: string, editor: MagicString=new MagicString(source), ast: Node=parse(source)): { code: string, map: SourceMap } {
+const BABYLON_PLUGINS = [
+  'classProperties'
+];
+
+export default function addVariableDeclarations(
+  source: string,
+  editor: MagicString=new MagicString(source),
+  ast: Node=parse(source, { plugins: BABYLON_PLUGINS })
+): { code: string, map: SourceMap } {
   let state = null;
   let seen = new Set();
 
