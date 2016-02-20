@@ -30,7 +30,14 @@ export default function addVariableDeclarations(
      */
     AssignmentExpression(path: NodePath) {
       let { node } = path;
+
+      if (node.operator !== '=') {
+        // Ignore e.g. `+=`.
+        return;
+      }
+
       if (seen.has(node)) {
+        // We've already processed this one.
         return;
       }
 
