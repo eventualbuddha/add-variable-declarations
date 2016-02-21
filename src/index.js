@@ -20,6 +20,7 @@ export default function addVariableDeclarations(
 ): { code: string, map: SourceMap } {
   let state = null;
   let seen = new Set();
+  let deferredInlinePositions = [];
 
   traverse(ast, {
     /**
@@ -57,7 +58,7 @@ export default function addVariableDeclarations(
 
       if (canInsertVar && newNames.length === names.length) {
         getParenthesesRanges(node, ast.tokens).forEach(({ start, end }) => editor.remove(start, end));
-        editor.insert(node.start, 'var ');
+        deferredInlinePositions.push(node.start);
       } else {
         let insertionScope = path.scope;
         let firstStatement;
@@ -93,7 +94,7 @@ export default function addVariableDeclarations(
       }
 
       if (newNames.length === names.length) {
-        editor.insert(node.left.start, 'var ');
+        deferredInlinePositions.push(node.left.start);
       } else {
         let firstStatement = getFirstStatementInBlock(path.parentPath.scope.block);
         editor.insert(
@@ -136,7 +137,7 @@ export default function addVariableDeclarations(
       }
 
       node.expressions.forEach(expression => seen.add(expression));
-      editor.insert(node.start, 'var ');
+      deferredInlinePositions.push(node.start);
     },
 
     Scope: {
@@ -149,6 +150,8 @@ export default function addVariableDeclarations(
       }
     }
   });
+
+  deferredInlinePositions.forEach(position => editor.insert(position, 'var '));
 
   return {
     code: editor.toString(),
