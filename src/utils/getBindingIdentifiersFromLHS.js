@@ -1,4 +1,5 @@
 import flatMap from './flatMap.js';
+import type { Node } from '../types.js';
 
 /**
  * Gets the names to be bound in the LHS of an assignment.
@@ -8,16 +9,16 @@ import flatMap from './flatMap.js';
  *   [ d, e ] = [];                 // [ 'd', 'e' ]
  *   ({ f: g, h: [ i, j ] } = {});  // [ 'g', 'i', 'j' ]
  */
-export default function getNamesFromLHS(node: Node): Array<string> {
+export default function getBindingIdentifiersFromLHS(node: Node): Array<Node> {
   switch (node.type) {
     case 'Identifier':
-      return [node.name];
+      return [node];
 
     case 'ObjectPattern':
-      return flatMap(node.properties, property => getNamesFromLHS(property.value));
+      return flatMap(node.properties, property => getBindingIdentifiersFromLHS(property.value));
 
     case 'ArrayPattern':
-      return flatMap(node.elements, getNamesFromLHS);
+      return flatMap(node.elements, getBindingIdentifiersFromLHS);
 
     default:
       return [];

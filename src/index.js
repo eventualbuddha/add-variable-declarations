@@ -2,7 +2,7 @@ import MagicString from 'magic-string';
 import TraverseState from './utils/TraverseState.js';
 import buildDeclarationForNames from './utils/buildDeclarationForNames.js';
 import getFirstStatementInBlock from './utils/getFirstStatementInBlock.js';
-import getNamesFromLHS from './utils/getNamesFromLHS.js';
+import getBindingIdentifiersFromLHS from './utils/getBindingIdentifiersFromLHS.js';
 import getParenthesesRanges from './utils/getParenthesesRanges.js';
 import traverse from 'babel-traverse';
 import type NodePath from 'babel-traverse/src/path/index.js';
@@ -42,8 +42,9 @@ export default function addVariableDeclarations(
         return;
       }
 
-      let names = getNamesFromLHS(node.left);
-      let newNames = names.filter(name => state.addName(name));
+      let state = getState();
+      let identifiers = getBindingIdentifiersFromLHS(node.left);
+      let newIdentifiers = identifiers.filter(identifier => state.addBindingIdentifier(identifier));
       let canInsertVar = (
         path.parent.type === 'ExpressionStatement' ||
         (
@@ -52,11 +53,11 @@ export default function addVariableDeclarations(
         )
       );
 
-      if (newNames.length === 0) {
+      if (newIdentifiers.length === 0) {
         return;
       }
 
-      if (canInsertVar && newNames.length === names.length) {
+      if (canInsertVar && newIdentifiers.length === identifiers.length) {
         getParenthesesRanges(node, ast.tokens).forEach(({ start, end }) => editor.remove(start, end));
         deferredInlinePositions.push(node.start);
       } else {
@@ -66,10 +67,16 @@ export default function addVariableDeclarations(
           firstStatement = getFirstStatementInBlock(insertionScope.block);
           insertionScope = insertionScope.parent;
         } while (!firstStatement);
-        editor.insert(
-          firstStatement.start,
-          buildDeclarationForNames(newNames, source, firstStatement.start)
-        );
+        if (firstStatement) {
+          editor.insert(
+            firstStatement.start,
+            buildDeclarationForNames(
+              newIdentifiers.map(({ name }) => name),
+              source,
+              firstStatement.start
+            )
+          );
+        }
       }
     },
 
@@ -85,22 +92,29 @@ export default function addVariableDeclarations(
      *   }
      */
     ForXStatement(path: NodePath) {
+      let state = getState();
       let { node } = path;
-      let names = getNamesFromLHS(node.left);
-      let newNames = names.filter(name => state.addName(name));
+      let identifiers = getBindingIdentifiersFromLHS(node.left);
+      let newIdentifiers = identifiers.filter(name => state.addBindingIdentifier(name));
 
-      if (newNames.length === 0) {
+      if (newIdentifiers.length === 0) {
         return;
       }
 
-      if (newNames.length === names.length) {
+      if (newIdentifiers.length === identifiers.length) {
         deferredInlinePositions.push(node.left.start);
       } else {
         let firstStatement = getFirstStatementInBlock(path.parentPath.scope.block);
-        editor.insert(
-          firstStatement.start,
-          buildDeclarationForNames(names, source, firstStatement.start)
-        );
+        if (firstStatement) {
+          editor.insert(
+            firstStatement.start,
+            buildDeclarationForNames(
+              newIdentifiers.map(({ name }) => name),
+              source,
+              firstStatement.start
+            )
+          );
+        }
       }
     },
 
@@ -113,6 +127,7 @@ export default function addVariableDeclarations(
      *   }
      */
     SequenceExpression(path: NodePath) {
+      let state = getState();
       let { node } = path;
       let names = [];
 
@@ -122,12 +137,12 @@ export default function addVariableDeclarations(
           return;
         }
 
-        let lhsNames = getNamesFromLHS(expression.left);
-        if (lhsNames.length === 0) {
+        let identifiers = getBindingIdentifiersFromLHS(expression.left);
+        if (identifiers.length === 0) {
           return;
         }
 
-        names.push(...lhsNames);
+        names.push(...identifiers.map(identifier => identifier.name));
       }
 
       let newNames = names.filter(name => !state.hasName(name));
@@ -146,10 +161,18 @@ export default function addVariableDeclarations(
       },
 
       exit() {
-        state = state.parentState;
+        state = state ? state.parentState : null;
       }
     }
   });
+
+  function getState(): TraverseState {
+    if (!state) {
+      throw new Error('BUG: state is not set');
+    } else {
+      return state;
+    }
+  }
 
   deferredInlinePositions.forEach(position => editor.insert(position, 'var '));
 
