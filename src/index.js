@@ -44,6 +44,7 @@ export default function addVariableDeclarations(
 
       let names = getNamesFromLHS(node.left);
       let newNames = names.filter(name => state.addName(name));
+      let state = getState();
       let canInsertVar = (
         path.parent.type === 'ExpressionStatement' ||
         (
@@ -85,6 +86,7 @@ export default function addVariableDeclarations(
      *   }
      */
     ForXStatement(path: NodePath) {
+      let state = getState();
       let { node } = path;
       let names = getNamesFromLHS(node.left);
       let newNames = names.filter(name => state.addName(name));
@@ -113,6 +115,7 @@ export default function addVariableDeclarations(
      *   }
      */
     SequenceExpression(path: NodePath) {
+      let state = getState();
       let { node } = path;
       let names = [];
 
@@ -146,10 +149,18 @@ export default function addVariableDeclarations(
       },
 
       exit() {
-        state = state.parentState;
+        state = state ? state.parentState : null;
       }
     }
   });
+
+  function getState(): TraverseState {
+    if (!state) {
+      throw new Error('BUG: state is not set');
+    } else {
+      return state;
+    }
+  }
 
   deferredInlinePositions.forEach(position => editor.insert(position, 'var '));
 
