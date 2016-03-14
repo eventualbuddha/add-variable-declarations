@@ -10,7 +10,20 @@ import type { Node, Token, SourceMap } from './types.js';
 import { parse } from 'babylon';
 
 const BABYLON_PLUGINS = [
-  'classProperties'
+  'flow',
+  'jsx',
+  'asyncFunctions',
+  'asyncGenerators',
+  'classConstructorCall',
+  'classProperties',
+  'decorators',
+  'doExpressions',
+  'exponentiationOperator',
+  'exportExtensions',
+  'functionBind',
+  'functionSent',
+  'objectRestSpread',
+  'trailingFunctionCommas'
 ];
 
 export default function addVariableDeclarations(
