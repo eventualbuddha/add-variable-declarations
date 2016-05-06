@@ -1,2 +1,1 @@
-export const description = 'does not add declarations for bindings referenced as globals before assignment';
-export const noop = true;
+export const description = 'adds declarations for bindings referenced before assignment';
