@@ -6,7 +6,7 @@ import getBindingIdentifiersFromLHS from './utils/getBindingIdentifiersFromLHS.j
 import getParenthesesRanges from './utils/getParenthesesRanges.js';
 import traverse from 'babel-traverse';
 import type NodePath from 'babel-traverse/src/path/index.js';
-import type { Node, Token, SourceMap } from './types.js';
+import type { Node, SourceMap } from './types.js';
 import { parse } from 'babylon';
 
 const BABYLON_PLUGINS = [
