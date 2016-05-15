@@ -81,7 +81,7 @@ export default function addVariableDeclarations(
           insertionScope = insertionScope.parent;
         } while (!firstStatement);
         if (firstStatement) {
-          editor.insert(
+          editor.insertLeft(
             firstStatement.start,
             buildDeclarationForNames(
               newIdentifiers.map(({ name }) => name),
@@ -119,7 +119,7 @@ export default function addVariableDeclarations(
       } else {
         let firstStatement = getFirstStatementInBlock(path.parentPath.scope.block);
         if (firstStatement) {
-          editor.insert(
+          editor.insertRight(
             firstStatement.start,
             buildDeclarationForNames(
               newIdentifiers.map(({ name }) => name),
@@ -187,7 +187,7 @@ export default function addVariableDeclarations(
     }
   }
 
-  deferredInlinePositions.forEach(position => editor.insert(position, 'var '));
+  deferredInlinePositions.forEach(position => editor.insertRight(position, 'var '));
 
   return {
     code: editor.toString(),
