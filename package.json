@@ -2,8 +2,8 @@
   "name": "add-variable-declarations",
   "version": "1.5.1",
   "description": "Add variable declarations for global assignments.",
-  "main": "dist/add-variable-declarations.umd.js",
-  "jsnext:main": "dist/add-variable-declarations.es.js",
+  "main": "dist/add-variable-declarations.js",
+  "jsnext:main": "dist/add-variable-declarations.mjs",
   "directories": {
     "test": "test"
   },

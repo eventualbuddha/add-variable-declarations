@@ -6,11 +6,11 @@ export default {
   plugins: [babel(babelrc())],
   targets: [
     {
-      dest: 'dist/add-variable-declarations.es.js',
+      dest: 'dist/add-variable-declarations.mjs',
       format: 'es6'
     },
     {
-      dest: 'dist/add-variable-declarations.umd.js',
+      dest: 'dist/add-variable-declarations.js',
       format: 'umd',
       moduleName: 'addVariableDeclarations'
     }
