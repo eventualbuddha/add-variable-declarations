@@ -9,6 +9,7 @@ export default function getFirstStatementInBlock(node: Node): ?Node {
     case 'FunctionDeclaration':
     case 'FunctionExpression':
     case 'ForStatement':
+    case 'ObjectMethod':
       return getFirstStatementInBlock(node.body);
 
     case 'ArrowFunctionExpression':
