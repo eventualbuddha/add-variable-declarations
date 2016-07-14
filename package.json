@@ -1,6 +1,5 @@
 {
   "name": "add-variable-declarations",
-  "version": "1.6.1",
   "description": "Add variable declarations for global assignments.",
   "main": "dist/add-variable-declarations.js",
   "jsnext:main": "dist/add-variable-declarations.mjs",
@@ -10,7 +9,8 @@
   "scripts": {
     "build": "rollup -c",
     "test": "mocha --compilers js:babel-register",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "files": [
     "dist"
@@ -42,7 +42,8 @@
     "babelrc-rollup": "^1.0.0",
     "mocha": "^2.5.3",
     "rollup": "^0.27.0",
-    "rollup-plugin-babel": "^2.5.0"
+    "rollup-plugin-babel": "^2.5.0",
+    "semantic-release": "^4.3.5"
   },
   "dependencies": {
     "babel-traverse": "^6.9.0",
