@@ -7,7 +7,7 @@ readdirSync(join(__dirname, 'fixtures')).forEach(testFixture);
 
 function testFixture(name) {
   let config = requireFixtureModule(name, 'config.js');
-  it(config.description, () => {
+  (config.skip ? it.skip : config.only ? it.only : it)(config.description, () => {
     let input = readFixtureFile(name, 'input.js');
     let actual = refactor(input);
     writeFixtureFile(name, '_actual.js', actual.code);
