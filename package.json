@@ -41,7 +41,7 @@
     "babel-register": "^6.11.6",
     "babelrc-rollup": "^3.0.0",
     "mocha": "^3.0.2",
-    "rollup": "^0.34.8",
+    "rollup": "^0.35.1",
     "rollup-plugin-babel": "^2.6.1",
     "semantic-release": "^4.3.5"
   },
