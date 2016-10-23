@@ -4,6 +4,7 @@ import buildDeclarationForNames from './utils/buildDeclarationForNames.js';
 import getFirstStatementInBlock from './utils/getFirstStatementInBlock.js';
 import getBindingIdentifiersFromLHS from './utils/getBindingIdentifiersFromLHS.js';
 import getParenthesesRanges from './utils/getParenthesesRanges.js';
+import lhsHasNonIdentifierAssignment from './utils/lhsHasNonIdentifierAssignment';
 import traverse from 'babel-traverse';
 import type NodePath from 'babel-traverse/src/path/index.js';
 import type { Node, SourceMap } from './types.js';
@@ -58,13 +59,10 @@ export default function addVariableDeclarations(
       let state = getState();
       let identifiers = getBindingIdentifiersFromLHS(node.left);
       let newIdentifiers = identifiers.filter(identifier => state.addBindingIdentifier(identifier));
-      let canInsertVar = (
-        path.parent.type === 'ExpressionStatement' ||
-        (
-          path.parent.type === 'ForStatement' &&
-          node === path.parent.init
-        )
-      );
+      let canInsertVar = !lhsHasNonIdentifierAssignment(node.left) && (
+          path.parent.type === 'ExpressionStatement' ||
+          (path.parent.type === 'ForStatement' && node === path.parent.init)
+        );
 
       if (newIdentifiers.length === 0) {
         return;
