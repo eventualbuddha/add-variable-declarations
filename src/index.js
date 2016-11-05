@@ -119,7 +119,7 @@ export default function addVariableDeclarations(
       } else {
         let firstStatement = getFirstStatementInBlock(path.parentPath.scope.block);
         if (firstStatement) {
-          editor.insertRight(
+          editor.insertLeft(
             firstStatement.start,
             buildDeclarationForNames(
               newIdentifiers.map(({ name }) => name),
@@ -187,7 +187,7 @@ export default function addVariableDeclarations(
     }
   }
 
-  deferredInlinePositions.forEach(position => editor.insertRight(position, 'var '));
+  deferredInlinePositions.forEach(position => editor.insertLeft(position, 'var '));
 
   return {
     code: editor.toString(),
