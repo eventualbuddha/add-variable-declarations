@@ -19,6 +19,9 @@ export default function lhsHasNonIdentifierAssignment(node: Node): boolean {
     case 'ArrayPattern':
       return node.elements.some(lhsHasNonIdentifierAssignment);
 
+    case 'RestElement':
+      return lhsHasNonIdentifierAssignment(node.argument);
+
     default:
       return true;
   }

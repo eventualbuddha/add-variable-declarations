@@ -8,6 +8,7 @@ import type { Node } from '../types.js';
  *   ({ b, c } = {});               // [ 'b', 'c' ]
  *   [ d, e ] = [];                 // [ 'd', 'e' ]
  *   ({ f: g, h: [ i, j ] } = {});  // [ 'g', 'i', 'j' ]
+ *   [ k.l, ...m ] = [];            // [ 'm' ]
  */
 export default function getBindingIdentifiersFromLHS(node: Node): Array<Node> {
   switch (node.type) {
@@ -19,6 +20,9 @@ export default function getBindingIdentifiersFromLHS(node: Node): Array<Node> {
 
     case 'ArrayPattern':
       return flatMap(node.elements, getBindingIdentifiersFromLHS);
+
+    case 'RestElement':
+      return getBindingIdentifiersFromLHS(node.argument);
 
     default:
       return [];
