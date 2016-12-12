@@ -1,0 +1,1 @@
+export const description = 'safely converts array destructuring with a new variable and a property assignment as a loop assignee';
