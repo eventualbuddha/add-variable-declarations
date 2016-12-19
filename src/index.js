@@ -1,9 +1,6 @@
 import MagicString from 'magic-string';
 import TraverseState from './utils/TraverseState.js';
-import buildDeclarationForNames from './utils/buildDeclarationForNames.js';
-import getFirstStatementInBlock from './utils/getFirstStatementInBlock.js';
 import getBindingIdentifiersFromLHS from './utils/getBindingIdentifiersFromLHS.js';
-import getParenthesesRanges from './utils/getParenthesesRanges.js';
 import lhsHasNonIdentifierAssignment from './utils/lhsHasNonIdentifierAssignment';
 import traverse from 'babel-traverse';
 import type NodePath from 'babel-traverse/src/path/index.js';
@@ -34,7 +31,6 @@ export default function addVariableDeclarations(
 ): { code: string, map: SourceMap } {
   let state = null;
   let seen = new Set();
-  let deferredInlinePositions = [];
 
   traverse(ast, {
     /**
@@ -57,38 +53,28 @@ export default function addVariableDeclarations(
       }
 
       let state = getState();
-      let identifiers = getBindingIdentifiersFromLHS(node.left);
-      let newIdentifiers = identifiers.filter(identifier => state.addBindingIdentifier(identifier));
+      let names = getBindingIdentifiersFromLHS(node.left).map(id => id.name);
       let canInsertVar = !lhsHasNonIdentifierAssignment(node.left) && (
           path.parent.type === 'ExpressionStatement' ||
           (path.parent.type === 'ForStatement' && node === path.parent.init)
         );
-
-      if (newIdentifiers.length === 0) {
-        return;
-      }
-
-      if (canInsertVar && newIdentifiers.length === identifiers.length) {
-        getParenthesesRanges(node, ast.tokens).forEach(({ start, end }) => editor.remove(start, end));
-        deferredInlinePositions.push(node.start);
+      if (canInsertVar) {
+        state.addInlineBinding(node, names, { shouldRemoveParens: true });
       } else {
-        let insertionScope = path.scope;
-        let firstStatement;
-        do {
-          firstStatement = getFirstStatementInBlock(insertionScope.block);
-          insertionScope = insertionScope.parent;
-        } while (!firstStatement);
-        if (firstStatement) {
-          editor.appendLeft(
-            firstStatement.start,
-            buildDeclarationForNames(
-              newIdentifiers.map(({ name }) => name),
-              source,
-              firstStatement.start
-            )
-          );
+        for (let name of names) {
+          state.addBinding(name);
         }
       }
+    },
+
+    /**
+     * We want to declare each variable at its most specific scope across all
+     * assignments and usages, so note each usage, since it might affect that
+     * scope.
+     */
+    Identifier(path: NodePath) {
+      let state = getState();
+      state.handleSeenIdentifier(path.node.name);
     },
 
     /**
@@ -105,27 +91,13 @@ export default function addVariableDeclarations(
     ForXStatement(path: NodePath) {
       let state = getState();
       let { node } = path;
-      let identifiers = getBindingIdentifiersFromLHS(node.left);
-      let newIdentifiers = identifiers.filter(name => state.addBindingIdentifier(name));
-
-      if (newIdentifiers.length === 0) {
-        return;
-      }
-
-      if (newIdentifiers.length === identifiers.length) {
-        deferredInlinePositions.push(node.left.start);
-      } else {
-        let firstStatement = getFirstStatementInBlock(path.parentPath.scope.block);
-        if (firstStatement) {
-          editor.appendLeft(
-            firstStatement.start,
-            buildDeclarationForNames(
-              newIdentifiers.map(({ name }) => name),
-              source,
-              firstStatement.start
-            )
-          );
+      let names = getBindingIdentifiersFromLHS(node.left).map(id => id.name);
+      if (lhsHasNonIdentifierAssignment(node.left)) {
+        for (let name of names) {
+          state.addBinding(name);
         }
+      } else {
+        state.addInlineBinding(node.left, names, { shouldRemoveParens: false });
       }
     },
 
@@ -142,8 +114,7 @@ export default function addVariableDeclarations(
       let { node } = path;
       let names = [];
 
-      for (let i = 0; i < node.expressions.length; i++) {
-        let expression = node.expressions[i];
+      for (let expression of node.expressions) {
         if (expression.type !== 'AssignmentExpression') {
           return;
         }
@@ -152,18 +123,14 @@ export default function addVariableDeclarations(
         if (identifiers.length === 0) {
           return;
         }
+        if (lhsHasNonIdentifierAssignment(expression.left)) {
+          return;
+        }
 
         names.push(...identifiers.map(identifier => identifier.name));
       }
-
-      let newNames = names.filter(name => !state.hasName(name));
-
-      if (newNames.length !== names.length) {
-        return;
-      }
-
+      state.addInlineBinding(node, names, { shouldRemoveParens: false });
       node.expressions.forEach(expression => seen.add(expression));
-      deferredInlinePositions.push(node.start);
     },
 
     Scope: {
@@ -172,7 +139,10 @@ export default function addVariableDeclarations(
       },
 
       exit() {
-        state = state ? state.parentState : null;
+        if (state) {
+          state.commitDeclarations(editor, source, ast.tokens);
+          state = state.parentState;
+        }
       }
     }
   });
@@ -184,8 +154,6 @@ export default function addVariableDeclarations(
       return state;
     }
   }
-
-  deferredInlinePositions.forEach(position => editor.appendLeft(position, 'var '));
 
   return {
     code: editor.toString(),
