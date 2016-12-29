@@ -27,7 +27,11 @@ const BABYLON_PLUGINS = [
 export default function addVariableDeclarations(
   source: string,
   editor: MagicString=new MagicString(source),
-  ast: Node=parse(source, { plugins: BABYLON_PLUGINS, sourceType: 'module' })
+  ast: Node=parse(source, {
+      plugins: BABYLON_PLUGINS,
+      sourceType: 'module',
+      allowReturnOutsideFunction: true
+    })
 ): { code: string, map: SourceMap } {
   let state = null;
   let seen = new Set();
