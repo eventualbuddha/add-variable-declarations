@@ -101,7 +101,8 @@ export default class TraverseState {
     if (names.length === 0) {
       return;
     }
-    if (names.every(name => this.resolveName(name) === 'NOT_FOUND')) {
+    // This is only eligible as an inline binding if every name is distinct and not yet taken.
+    if (names.every(name => this.resolveName(name) === 'NOT_FOUND') && new Set(names).size === names.length) {
       let newBindings = names.map(name => this.createBinding(name, this.scope));
       let bindingOwner = this.getEnclosingBindingOwner();
       bindingOwner.ownedInlineBindings.push({
