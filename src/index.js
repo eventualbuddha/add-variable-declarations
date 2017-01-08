@@ -118,6 +118,11 @@ export default function addVariableDeclarations(
       let { node } = path;
       let names = [];
 
+      if (path.parent.type !== 'ExpressionStatement' &&
+          !(path.parent.type === 'ForStatement' && node === path.parent.init)) {
+        return;
+      }
+
       for (let expression of node.expressions) {
         if (expression.type !== 'AssignmentExpression') {
           return;
@@ -133,7 +138,7 @@ export default function addVariableDeclarations(
 
         names.push(...identifiers.map(identifier => identifier.name));
       }
-      state.addInlineBinding(node, names, { shouldRemoveParens: false });
+      state.addInlineBinding(node, names, { shouldRemoveParens: true });
       node.expressions.forEach(expression => seen.add(expression));
     },
 
