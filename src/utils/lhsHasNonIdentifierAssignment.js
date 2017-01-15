@@ -20,7 +20,9 @@ export default function lhsHasNonIdentifierAssignment(node: Node): boolean {
       return node.elements.some(lhsHasNonIdentifierAssignment);
 
     case 'RestElement':
-      return lhsHasNonIdentifierAssignment(node.argument);
+      // JS allows array and object destructuring on a rest assignee, but they
+      // can't be used in an inline assignment.
+      return node.argument.type !== 'Identifier';
 
     default:
       return true;
