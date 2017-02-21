@@ -34,6 +34,7 @@ export default function addVariableDeclarations(
     })
 ): { code: string, map: SourceMap } {
   let state = null;
+  let savedStates = [];
   let seen = new Set();
 
   traverse(ast, {
@@ -153,7 +154,27 @@ export default function addVariableDeclarations(
           state = state.parentState;
         }
       }
-    }
+    },
+
+    enter(path) {
+      // ObjectMethod and ClassMethod nodes are strange in that their key name
+      // is in the outer scope, not the method scope, so we get the wrong scope
+      // if we use the usual scope enter and exit hooks. To work around this,
+      // pretend to be one scope higher while in the key, then restore the state
+      // afterward.
+      if ((path.parent.type === 'ObjectMethod' && path.key === 'key') ||
+          (path.parent.type === 'ClassMethod' && path.key === 'key')) {
+        savedStates.push(state);
+        state = state.parentState;
+      }
+    },
+
+    exit(path) {
+      if ((path.parent.type === 'ObjectMethod' && path.key === 'key') ||
+          (path.parent.type === 'ClassMethod' && path.key === 'key')) {
+        state = savedStates.pop();
+      }
+    },
   });
 
   function getState(): TraverseState {
