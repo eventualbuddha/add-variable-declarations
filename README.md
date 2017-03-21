@@ -1,5 +1,7 @@
 # add-variable-declarations
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/eventualbuddha/add-variable-declarations.svg)](https://greenkeeper.io/)
+
 Add variable declarations for implicit global variable assignments.
 
 ## Install
