@@ -1,14 +1,16 @@
-import type MagicString from 'magic-string';
-import type { Node, Scope, Token } from '../types.js';
-import getFirstStatementInBlock from './getFirstStatementInBlock.js';
-import buildDeclarationForNames from './buildDeclarationForNames.js';
-import getParenthesesRanges from './getParenthesesRanges.js';
+import MagicString from 'magic-string';
+import { isFunction, Node } from 'babel-types';
+import { Scope } from 'babel-traverse';
+import { Token } from '../types';
+import getFirstStatementInBlock from './getFirstStatementInBlock';
+import buildDeclarationForNames from './buildDeclarationForNames';
+import getParenthesesRanges from './getParenthesesRanges';
 
 /**
  * The state of one proposed binding. As new usages are seen, the
  * mostSpecificScope field is updated accordingly.
  */
-class BindingState {
+export class BindingState {
   name: string;
   mostSpecificScope: Scope;
   isInOriginalPosition: boolean = true;
@@ -34,7 +36,7 @@ class BindingState {
  * Information about an "inline binding", a potential opportunity to insert
  * `var` directly at the variable declaration.
  */
-type InlineBindingState = {
+export type InlineBindingState = {
   node: Node;
   bindings: Array<BindingState>;
   shouldRemoveParens: boolean;
@@ -53,11 +55,11 @@ type InlineBindingState = {
  */
 export default class TraverseState {
   scope: Scope;
-  parentState: ?TraverseState;
+  parentState: TraverseState | null;
   ownedBindings: Map<string, BindingState> = new Map();
   ownedInlineBindings: Array<InlineBindingState> = [];
 
-  constructor(scope: Scope, parentState: ?TraverseState=null) {
+  constructor(scope: Scope, parentState: TraverseState | null=null) {
     this.scope = scope;
     this.parentState = parentState;
   }
@@ -130,6 +132,8 @@ export default class TraverseState {
   getEnclosingBindingOwner(): TraverseState {
     if (this.canOwnBindings()) {
       return this;
+    } else if (!this.parentState) {
+      throw new Error(`expected parent state but none was found!`);
     } else {
       return this.parentState.getEnclosingBindingOwner();
     }
@@ -139,6 +143,7 @@ export default class TraverseState {
     if (!this.parentState) {
       return true;
     }
+
     switch (this.scope.block.type) {
       case 'FunctionDeclaration':
       case 'FunctionExpression':
@@ -155,8 +160,9 @@ export default class TraverseState {
     if (this.scope.getBinding(name)) {
       return 'ALREADY_DECLARED';
     }
-    if (this.ownedBindings.has(name)) {
-      return this.ownedBindings.get(name);
+    let binding = this.ownedBindings.get(name);
+    if (binding) {
+      return binding;
     }
     if (this.parentState) {
       return this.parentState.resolveName(name);
@@ -210,30 +216,37 @@ export default class TraverseState {
    * and grouped by scope.
    */
   getBindingNamesByScope(usedNames: Set<string>): Map<Scope, Array<string>> {
-    let bindingNamesByScope = new Map();
-    for (let {name, mostSpecificScope} of this.ownedBindings.values()) {
+    let bindingNamesByScope = new Map<Scope, Array<string>>();
+
+    for (let { name, mostSpecificScope } of this.ownedBindings.values()) {
       if (usedNames.has(name)) {
         continue;
       }
-      if (bindingNamesByScope.has(mostSpecificScope)) {
-        bindingNamesByScope.get(mostSpecificScope).push(name);
+
+      let names = bindingNamesByScope.get(mostSpecificScope);
+      if (names) {
+        names.push(name);
       } else {
         bindingNamesByScope.set(mostSpecificScope, [name]);
       }
     }
+
     for (let names of bindingNamesByScope.values()) {
       names.sort();
     }
+
     return bindingNamesByScope;
   }
 
-  getFirstStatementForScope(scope: Scope): ?Node {
+  getFirstStatementForScope(scope: Scope): Node | null {
     let firstStatement;
     let insertionScope = scope;
+
     do {
       firstStatement = getFirstStatementInBlock(insertionScope.block);
       insertionScope = insertionScope.parent;
     } while (!firstStatement);
+
     return firstStatement;
   }
 }

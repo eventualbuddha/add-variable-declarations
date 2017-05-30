@@ -1,2 +1,10 @@
-dist
+# ignore generated fixture data
 _actual*
+
+# ignore TypeScript build files
+src/**/*.js
+src/**/*.js.map
+src/**/*.d.ts
+test/**/*.js
+test/**/*.js.map
+test/**/*.d.ts

@@ -1,4 +1,5 @@
-import type { Node, Token } from '../types.js';
+import { Node } from 'babel-types';
+import { Token } from '../types';
 
 export default function getParenthesesRanges(node: Node, tokens: Array<Token>): Array<{ start: number, end: number }> {
   let leftParenTokens = [];

@@ -1,4 +1,4 @@
-import getIndentForLineContainingOffset from './getIndentForLineContainingOffset.js';
+import getIndentForLineContainingOffset from './getIndentForLineContainingOffset';
 
 export default function buildDeclarationForNames(names: Array<string>, source: string, offset: number): string {
   let nameList = names.sort((a, b) => a.localeCompare(b)).join(', ');
