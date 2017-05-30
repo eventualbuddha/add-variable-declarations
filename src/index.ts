@@ -1,41 +1,42 @@
 import MagicString from 'magic-string';
-import TraverseState from './utils/TraverseState.js';
-import getBindingIdentifiersFromLHS from './utils/getBindingIdentifiersFromLHS.js';
+import TraverseState from './utils/TraverseState';
+import getBindingIdentifiersFromLHS from './utils/getBindingIdentifiersFromLHS';
 import lhsHasNonIdentifierAssignment from './utils/lhsHasNonIdentifierAssignment';
-import traverse from 'babel-traverse';
-import type NodePath from 'babel-traverse/src/path/index.js';
-import type { Node, SourceMap } from './types.js';
+import traverse, { NodePath } from 'babel-traverse';
+import * as t from 'babel-types';
 import { parse } from 'babylon';
 
-const BABYLON_PLUGINS = [
-  'flow',
-  'jsx',
-  'asyncFunctions',
-  'asyncGenerators',
-  'classConstructorCall',
-  'classProperties',
-  'decorators',
-  'doExpressions',
-  'exponentiationOperator',
-  'exportExtensions',
-  'functionBind',
-  'functionSent',
-  'objectRestSpread',
-  'trailingFunctionCommas'
-];
+// Extracted from magic-string/index.d.ts.
+export type SourceMap = {
+  toString(): string;
+  toUrl(): string;
+};
 
 export default function addVariableDeclarations(
   source: string,
-  editor: MagicString=new MagicString(source),
-  ast: Node=parse(source, {
-      plugins: BABYLON_PLUGINS,
-      sourceType: 'module',
-      allowReturnOutsideFunction: true
-    })
+  editor = new MagicString(source),
+  ast: t.File = parse(source, {
+    plugins: [
+      'jsx',
+      'flow',
+      'classConstructorCall',
+      'doExpressions',
+      'objectRestSpread',
+      'decorators',
+      'classProperties',
+      'exportExtensions',
+      'asyncGenerators',
+      'functionBind',
+      'functionSent',
+      'dynamicImport',
+    ],
+    sourceType: 'module',
+    allowReturnOutsideFunction: true
+  })
 ): { code: string, map: SourceMap } {
-  let state = null;
-  let savedStates = [];
-  let seen = new Set();
+  let state: TraverseState | null = null;
+  let savedStates: Array<TraverseState> = [];
+  let seen = new Set<t.Node>();
 
   traverse(ast, {
     /**
@@ -44,7 +45,7 @@ export default function addVariableDeclarations(
      *   a = 1;      // can add `var` inline
      *   b(c = 2);   // needs standalone `var` at the top of scope
      */
-    AssignmentExpression(path: NodePath) {
+    AssignmentExpression(path: NodePath<t.AssignmentExpression>) {
       let { node } = path;
 
       if (node.operator !== '=') {
@@ -60,9 +61,9 @@ export default function addVariableDeclarations(
       let state = getState();
       let names = getBindingIdentifiersFromLHS(node.left).map(id => id.name);
       let canInsertVar = !lhsHasNonIdentifierAssignment(node.left) && (
-          path.parent.type === 'ExpressionStatement' ||
-          (path.parent.type === 'ForStatement' && node === path.parent.init)
-        );
+        t.isExpressionStatement(path.parent) ||
+        (t.isForStatement(path.parent) && node === path.parent.init)
+      );
       if (canInsertVar) {
         state.addInlineBinding(node, names, { shouldRemoveParens: true });
       } else {
@@ -77,7 +78,7 @@ export default function addVariableDeclarations(
      * assignments and usages, so note each usage, since it might affect that
      * scope.
      */
-    Identifier(path: NodePath) {
+    Identifier(path: NodePath<t.Identifier>) {
       let state = getState();
       state.handleSeenIdentifier(path.node.name);
     },
@@ -93,7 +94,7 @@ export default function addVariableDeclarations(
      *     …
      *   }
      */
-    ForXStatement(path: NodePath) {
+    ForXStatement(path: NodePath<t.ForXStatement>) {
       let state = getState();
       let { node } = path;
       let names = getBindingIdentifiersFromLHS(node.left).map(id => id.name);
@@ -114,37 +115,40 @@ export default function addVariableDeclarations(
      *     …
      *   }
      */
-    SequenceExpression(path: NodePath) {
+    SequenceExpression(path: NodePath<t.SequenceExpression>) {
       let state = getState();
       let { node } = path;
       let names = [];
 
-      if (path.parent.type !== 'ExpressionStatement' &&
-          !(path.parent.type === 'ForStatement' && node === path.parent.init)) {
+      if (!t.isExpressionStatement(path.parent) &&
+          !(t.isForStatement(path.parent) && node === path.parent.init)) {
         return;
       }
 
       for (let expression of node.expressions) {
-        if (expression.type !== 'AssignmentExpression') {
+        if (!t.isAssignmentExpression(expression)) {
           return;
         }
 
         let identifiers = getBindingIdentifiersFromLHS(expression.left);
+
         if (identifiers.length === 0) {
           return;
         }
+
         if (lhsHasNonIdentifierAssignment(expression.left)) {
           return;
         }
 
         names.push(...identifiers.map(identifier => identifier.name));
       }
+
       state.addInlineBinding(node, names, { shouldRemoveParens: true });
       node.expressions.forEach(expression => seen.add(expression));
     },
 
     Scope: {
-      enter(path: NodePath) {
+      enter(path: NodePath<t.Scopable>) {
         state = new TraverseState(path.scope, state);
       },
 
@@ -156,26 +160,26 @@ export default function addVariableDeclarations(
       }
     },
 
-    enter(path) {
+    enter(path: NodePath<t.Node>) {
       // ObjectMethod and ClassMethod nodes are strange in that their key name
       // is in the outer scope, not the method scope, so we get the wrong scope
       // if we use the usual scope enter and exit hooks. To work around this,
       // pretend to be one scope higher while in the key, then restore the state
       // afterward.
-      if ((path.parent.type === 'ObjectMethod' && path.key === 'key') ||
-          (path.parent.type === 'ClassMethod' && path.key === 'key')) {
-        savedStates.push(state);
-        state = state.parentState;
+      if ((t.isObjectMethod(path.parent) && path.key === 'key') ||
+          (t.isClassMethod(path.parent) && path.key === 'key')) {
+        savedStates.push(getState());
+        state = getState().parentState;
       }
     },
 
-    exit(path) {
-      if ((path.parent.type === 'ObjectMethod' && path.key === 'key') ||
-          (path.parent.type === 'ClassMethod' && path.key === 'key')) {
-        state = savedStates.pop();
+    exit(path: NodePath<t.Node>) {
+      if ((t.isObjectMethod(path.parent) && path.key === 'key') ||
+          (t.isClassMethod(path.parent) && path.key === 'key')) {
+        state = savedStates.pop() || null;
       }
     },
-  });
+  } as any);
 
   function getState(): TraverseState {
     if (!state) {

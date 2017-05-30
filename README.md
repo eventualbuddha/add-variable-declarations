@@ -4,8 +4,11 @@ Add variable declarations for implicit global variable assignments.
 
 ## Install
 
-```
-$ npm install [--save-dev] add-variable-declarations
+```bash
+# via yarn
+$ yarn add add-variable-declarations
+# via npm
+$ npm install add-variable-declarations
 ```
 
 ## Usage
@@ -24,6 +27,19 @@ console.log(addVariableDeclarations(source).code);
 // var radius = 8;
 // var circumference = 2 * PI * radius;
 ```
+
+## Development
+
+1. Clone the repository.
+   > `git@github.com:eventualbuddha/add-variable-declarations.git`
+1. Install dependencies.
+   > `yarn install`
+1. Make edits and re-build.
+   > `yarn run build`
+1. Or, to watch and build files as you edit.
+   > `yarn run build -- --watch`
+1. Run tests to ensure everything works.
+   > `yarn test`
 
 ## FAQ
 
