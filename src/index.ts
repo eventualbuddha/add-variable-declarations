@@ -179,7 +179,7 @@ export default function addVariableDeclarations(
         state = savedStates.pop() || null;
       }
     },
-  } as any);
+  });
 
   function getState(): TraverseState {
     if (!state) {
