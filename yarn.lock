@@ -35,9 +35,9 @@
     conventional-changelog "0.0.17"
     github-url-from-git "^1.4.0"
 
-"@types/babel-traverse@^6.7.16":
-  version "6.7.16"
-  resolved "https://registry.npmjs.org/@types/babel-traverse/-/babel-traverse-6.7.16.tgz#52f475893b8633f653499d745302fa5572a7bd05"
+"@types/babel-traverse@^6.7.17":
+  version "6.7.17"
+  resolved "https://registry.npmjs.org/@types/babel-traverse/-/babel-traverse-6.7.17.tgz#5212a4edced81f53a6c4fb1fd7a34aa4ff6cf36b"
   dependencies:
     "@types/babel-types" "*"
 
