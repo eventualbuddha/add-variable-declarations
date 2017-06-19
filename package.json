@@ -35,7 +35,7 @@
     "@types/babel-types": "^6.7.16",
     "@types/babylon": "^6.16.1",
     "@types/mocha": "^2.2.41",
-    "@types/node": "^7.0.22",
+    "@types/node": "^8.0.0",
     "mocha": "^3.0.2",
     "semantic-release": "^6.3.2",
     "typescript": "^2.3.3"
