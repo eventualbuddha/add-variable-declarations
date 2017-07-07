@@ -45,7 +45,7 @@
     "babel-traverse": "^6.13.0",
     "babel-types": "^6.24.1",
     "babylon": "^6.8.4",
-    "magic-string": "^0.21.3"
+    "magic-string": "^0.22.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
