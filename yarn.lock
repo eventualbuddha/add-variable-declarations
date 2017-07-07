@@ -55,9 +55,9 @@
   version "2.2.41"
   resolved "https://registry.npmjs.org/@types/mocha/-/mocha-2.2.41.tgz#e27cf0817153eb9f2713b2d3f6c68f1e1c3ca608"
 
-"@types/node@8.0.0":
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.0.tgz#acaa89247afddc7967e9902fd11761dadea1a555"
+"@types/node@^8.0.0":
+  version "8.0.8"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.8.tgz#0dc4ca2c6f6fc69baee16c5e928c4a627f517ada"
 
 abbrev@1:
   version "1.1.0"
@@ -903,9 +903,9 @@ loud-rejection@^1.0.0:
     currently-unhandled "^0.4.1"
     signal-exit "^3.0.0"
 
-magic-string@^0.21.3:
-  version "0.21.3"
-  resolved "https://registry.npmjs.org/magic-string/-/magic-string-0.21.3.tgz#87e201009ebfde6f46dc5757305a70af71e31624"
+magic-string@^0.22.1:
+  version "0.22.1"
+  resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.22.1.tgz#a1bda64dfd4ae6c63797a45a67ee473b1f8d0e0f"
   dependencies:
     vlq "^0.2.1"
 
