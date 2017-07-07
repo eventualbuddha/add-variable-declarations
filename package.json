@@ -3,7 +3,7 @@
   "version": "0.0.0-development",
   "description": "Add variable declarations for global assignments.",
   "main": "src/index.js",
-  "types": "dist/index.d.ts",
+  "types": "src/index.d.ts",
   "directories": {
     "test": "test"
   },
