@@ -8,3 +8,7 @@ src/**/*.d.ts
 test/**/*.js
 test/**/*.js.map
 test/**/*.d.ts
+
+# unignore test fixtures
+!test/fixtures/**/input.js
+!test/fixtures/**/expected.js
