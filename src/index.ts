@@ -29,10 +29,12 @@ export default function addVariableDeclarations(
       'functionBind',
       'functionSent',
       'dynamicImport',
+      'optionalChaining',
     ],
     sourceType: 'module',
-    allowReturnOutsideFunction: true
-  })
+    allowReturnOutsideFunction: true,
+    tokens: true,
+  } as any)
 ): { code: string, map: SourceMap } {
   let state: TraverseState | null = null;
   let savedStates: Array<TraverseState> = [];
