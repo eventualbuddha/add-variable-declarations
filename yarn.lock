@@ -226,9 +226,9 @@ babylon@7.0.0-beta.15:
   version "7.0.0-beta.15"
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-7.0.0-beta.15.tgz#410348bcd21af470a55abea9698c9c651d87f1c6"
 
-babylon@7.0.0-beta.16:
-  version "7.0.0-beta.16"
-  resolved "https://registry.yarnpkg.com/babylon/-/babylon-7.0.0-beta.16.tgz#448ceedeec0a5ef56b62812e3556bf36c5bb9781"
+babylon@7.0.0-beta.31:
+  version "7.0.0-beta.31"
+  resolved "https://registry.yarnpkg.com/babylon/-/babylon-7.0.0-beta.31.tgz#7ec10f81e0e456fd0f855ad60fa30c2ac454283f"
 
 balanced-match@^0.4.1:
   version "0.4.2"
