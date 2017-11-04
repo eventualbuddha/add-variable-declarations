@@ -143,17 +143,7 @@ export default class TraverseState {
     if (!this.parentState) {
       return true;
     }
-
-    switch (this.scope.block.type) {
-      case 'FunctionDeclaration':
-      case 'FunctionExpression':
-      case 'ObjectMethod':
-      case 'ClassMethod':
-        return true;
-
-      default:
-        return false;
-    }
+    return isFunction(this.scope.block);
   }
 
   resolveName(name: string): BindingState | 'NOT_FOUND' | 'ALREADY_DECLARED' {
