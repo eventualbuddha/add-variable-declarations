@@ -1,3 +1,6 @@
+# Ignore locally-installed dependencies.
+node_modules
+
 # ignore generated fixture data
 _actual*
 
