@@ -233,11 +233,11 @@ loose-envify@^1.0.0:
   dependencies:
     js-tokens "^3.0.0"
 
-magic-string@^0.22.2:
-  version "0.22.2"
-  resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.22.2.tgz#e0c54f1916d6264b34eb07634a5a1aacffded462"
+magic-string@^0.23.1:
+  version "0.23.1"
+  resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.23.1.tgz#2bfedb1bdb482fab323fb2a1564831b9be6beb21"
   dependencies:
-    vlq "^0.2.1"
+    sourcemap-codec "^1.4.1"
 
 minimatch@^3.0.4:
   version "3.0.4"
@@ -284,6 +284,10 @@ path-is-absolute@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/path-is-absolute/-/path-is-absolute-1.0.1.tgz#174b9268735534ffbc7ace6bf53a5a9e1b5c5f5f"
 
+sourcemap-codec@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/sourcemap-codec/-/sourcemap-codec-1.4.1.tgz#c8fd92d91889e902a07aee392bdd2c5863958ba2"
+
 strip-ansi@^3.0.0:
   version "3.0.1"
   resolved "https://registry.npmjs.org/strip-ansi/-/strip-ansi-3.0.1.tgz#6a385fb8853d952d5ff05d0e8aaf94278dc63dcf"
@@ -307,10 +311,6 @@ to-fast-properties@^1.0.1:
 typescript@^2.3.3:
   version "2.3.3"
   resolved "https://registry.npmjs.org/typescript/-/typescript-2.3.3.tgz#9639f3c3b40148e8ca97fe08a51dd1891bb6be22"
-
-vlq@^0.2.1:
-  version "0.2.2"
-  resolved "https://registry.npmjs.org/vlq/-/vlq-0.2.2.tgz#e316d5257b40b86bb43cb8d5fea5d7f54d6b0ca1"
 
 wrappy@1:
   version "1.0.2"
