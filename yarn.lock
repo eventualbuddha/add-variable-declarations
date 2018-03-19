@@ -233,9 +233,9 @@ loose-envify@^1.0.0:
   dependencies:
     js-tokens "^3.0.0"
 
-magic-string@^0.23.1:
-  version "0.23.1"
-  resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.23.1.tgz#2bfedb1bdb482fab323fb2a1564831b9be6beb21"
+magic-string@^0.24.0:
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.24.0.tgz#1b396d26406188f1fa3730a68229562d36a1c2f2"
   dependencies:
     sourcemap-codec "^1.4.1"
 
