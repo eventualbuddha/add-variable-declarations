@@ -44,7 +44,7 @@
     "babel-traverse": "7.0.0-alpha.15",
     "babel-types": "7.0.0-alpha.15",
     "babylon": "7.0.0-beta.34",
-    "magic-string": "^0.24.0"
+    "magic-string": "^0.25.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
