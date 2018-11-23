@@ -2,9 +2,9 @@ import MagicString from 'magic-string';
 import TraverseState from './utils/TraverseState';
 import getBindingIdentifiersFromLHS from './utils/getBindingIdentifiersFromLHS';
 import lhsHasNonIdentifierAssignment from './utils/lhsHasNonIdentifierAssignment';
-import traverse, { NodePath } from 'babel-traverse';
-import * as t from 'babel-types';
-import { parse } from 'babylon';
+import traverse, { NodePath } from '@babel/traverse';
+import * as t from '@babel/types';
+import { parse, ParserPlugin } from '@babel/parser';
 
 // Extracted from magic-string/index.d.ts.
 export type SourceMap = {
@@ -19,26 +19,37 @@ export default function addVariableDeclarations(
     plugins: [
       'jsx',
       'flow',
-      'classConstructorCall',
       'doExpressions',
       'objectRestSpread',
-      'decorators',
+      ['decorators', { decoratorsBeforeExport: true }],
       'classProperties',
-      'exportExtensions',
       'asyncGenerators',
       'functionBind',
       'functionSent',
       'dynamicImport',
       'optionalChaining',
-    ],
+    ] as Array<ParserPlugin>,
     sourceType: 'module',
     allowReturnOutsideFunction: true,
     tokens: true,
-  } as any)
+  })
 ): { code: string, map: SourceMap } {
   let state: TraverseState | null = null;
   let savedStates: Array<TraverseState> = [];
   let seen = new Set<t.Node>();
+
+  function visitForStatement(path: NodePath<t.ForInStatement | t.ForOfStatement>): void {
+    let state = getState();
+    let { node } = path;
+    let names = getBindingIdentifiersFromLHS(node.left).map(id => id.name);
+    if (lhsHasNonIdentifierAssignment(node.left)) {
+      for (let name of names) {
+        state.addBinding(name);
+      }
+    } else {
+      state.addInlineBinding(node.left, names, { shouldRemoveParens: false });
+    }
+  }
 
   traverse(ast, {
     /**
@@ -96,18 +107,8 @@ export default function addVariableDeclarations(
      *     …
      *   }
      */
-    ForXStatement(path: NodePath<t.ForXStatement>) {
-      let state = getState();
-      let { node } = path;
-      let names = getBindingIdentifiersFromLHS(node.left).map(id => id.name);
-      if (lhsHasNonIdentifierAssignment(node.left)) {
-        for (let name of names) {
-          state.addBinding(name);
-        }
-      } else {
-        state.addInlineBinding(node.left, names, { shouldRemoveParens: false });
-      }
-    },
+    ForInStatement: visitForStatement,
+    ForOfStatement: visitForStatement,
 
     /**
      * Optimizes for the case where there are multiple assignments in one
@@ -149,20 +150,11 @@ export default function addVariableDeclarations(
       node.expressions.forEach(expression => seen.add(expression));
     },
 
-    Scope: {
-      enter(path: NodePath<t.Scopable>) {
-        state = new TraverseState(path.scope, state);
-      },
-
-      exit() {
-        if (state) {
-          state.commitDeclarations(editor, source, ast.tokens);
-          state = state.parentState;
-        }
-      }
-    },
-
     enter(path: NodePath<t.Node>) {
+      if (t.isScopable(path.node)) {
+        state = new TraverseState(path.scope, state);
+      }
+
       // ObjectMethod and ClassMethod nodes are strange in that their key name
       // is in the outer scope, not the method scope, so we get the wrong scope
       // if we use the usual scope enter and exit hooks. To work around this,
@@ -176,6 +168,13 @@ export default function addVariableDeclarations(
     },
 
     exit(path: NodePath<t.Node>) {
+      if (t.isScopable(path.node)) {
+        if (state) {
+          state.commitDeclarations(editor, source, ast.tokens);
+          state = state.parentState;
+        }
+      }
+
       if ((t.isObjectMethod(path.parent) && path.key === 'key') ||
           (t.isClassMethod(path.parent) && path.key === 'key')) {
         state = savedStates.pop() || null;

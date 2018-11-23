@@ -1,9 +1,11 @@
 import flatMap from './flatMap';
-import * as t from 'babel-types';
+import * as t from '@babel/types';
 
 /**
  * Gets the names to be bound in the LHS of an assignment.
  *
+ * @example
+ * 
  *   a = 1;                         // [ 'a' ]
  *   ({ b, c } = {});               // [ 'b', 'c' ]
  *   [ d, e ] = [];                 // [ 'd', 'e' ]
@@ -17,7 +19,7 @@ export default function getBindingIdentifiersFromLHS(node: t.Node): Array<t.Iden
 
   if (t.isObjectPattern(node)) {
     return flatMap(node.properties, property =>
-      getBindingIdentifiersFromLHS(t.isRestProperty(property)
+      getBindingIdentifiersFromLHS(t.isRestElement(property)
         ? property.argument
         : property.value)
     );

@@ -1,12 +1,14 @@
-import * as t from 'babel-types';
+import * as t from '@babel/types';
 
 /**
  * Determines if any assignments are to properties or other non-identifiers. If
  * so, then it's illegal to put `var` to the left of the assignment.
+ * 
+ * @example
  *
- *   a = 1;                         // false
- *   ({ b, c } = {});               // false
- *   [ d, e.f ] = [];               // true
+ *   a = 1;              // false
+ *   ({ b, c } = {});    // false
+ *   [ d, e.f ] = [];    // true
  */
 export default function lhsHasNonIdentifierAssignment(node: t.Node): boolean {
   if (t.isIdentifier(node)) {
@@ -15,7 +17,7 @@ export default function lhsHasNonIdentifierAssignment(node: t.Node): boolean {
 
   if (t.isObjectPattern(node)) {
     return node.properties.some(property => lhsHasNonIdentifierAssignment(
-      t.isRestProperty(property)
+      t.isRestElement(property)
         ? property.argument
         : property.value
     ));
