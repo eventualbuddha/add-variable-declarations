@@ -1,6 +1,6 @@
 import MagicString from 'magic-string';
-import { isFunction, Node } from 'babel-types';
-import { Scope } from 'babel-traverse';
+import { isFunction, Node } from '@babel/types';
+import { Scope } from '@babel/traverse';
 import { Token } from '../types';
 import getFirstStatementInBlock from './getFirstStatementInBlock';
 import buildDeclarationForNames from './buildDeclarationForNames';
@@ -170,7 +170,7 @@ export default class TraverseState {
     let usedNames = new Set();
     // Defer `var` insertions so that magic-string will insert things in the
     // right order.
-    let varInsertionPoints = [];
+    let varInsertionPoints: Array<number> = [];
     for (let inlineBinding of this.ownedInlineBindings) {
       if (inlineBinding.bindings.every(binding => binding.isInOriginalPosition)) {
         let { node, shouldRemoveParens } = inlineBinding;
@@ -179,7 +179,7 @@ export default class TraverseState {
             editor.remove(start, end);
           }
         }
-        varInsertionPoints.push(node.start);
+        varInsertionPoints.push(node.start!);
         for (let binding of inlineBinding.bindings) {
           usedNames.add(binding.name);
         }
@@ -190,8 +190,8 @@ export default class TraverseState {
       let firstStatement = this.getFirstStatementForScope(scope);
       if (firstStatement) {
         editor.appendLeft(
-          firstStatement.start,
-          buildDeclarationForNames(names, source, firstStatement.start)
+          firstStatement.start!,
+          buildDeclarationForNames(names, source, firstStatement.start!)
         );
       }
     }
