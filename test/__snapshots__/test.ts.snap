@@ -1,0 +1,415 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`adds \`var\` correctly when inserting for both an inline var and a hoisted var at the same position 1`] = `
+"var name1;
+var name = 'abc';
+a[name1 = b()];
+"
+`;
+
+exports[`adds \`var\` for array patterns containing an assignment pattern 1`] = `
+"var [ a = 42 ] = array;
+"
+`;
+
+exports[`adds \`var\` to an object destructuring assignment that includes default values 1`] = `
+"var { a = {}, b } = c;
+"
+`;
+
+exports[`adds \`var\` to only the first assignment 1`] = `
+"var a = 1;
+a = 2;
+"
+`;
+
+exports[`adds declarations for assignments in blockless \`while\` to the parent block 1`] = `
+"var b;
+while (a) a(b = 1);
+"
+`;
+
+exports[`adds declarations for bindings referenced before assignment 1`] = `
+"if (a) {
+  var a = b;
+}
+"
+`;
+
+exports[`adds declarations for non-inline destructuring inside a class method 1`] = `
+"class C {
+  fn() {
+    var x, y;
+    return [x, y] = f();
+  }
+}
+"
+`;
+
+exports[`adds declarations outside blockless arrow function 1`] = `
+"var a;
+() => a = 1;
+"
+`;
+
+exports[`adds separate variable declaration for non-statements 1`] = `
+"var a;
+console.log(a = b);
+"
+`;
+
+exports[`adds variable declaration to rest assignments in an array destructure 1`] = `
+"var [a, ...b] = c;
+"
+`;
+
+exports[`allows code that does a top-level return 1`] = `
+"return a;
+"
+`;
+
+exports[`allows code that uses optional chaining 1`] = `
+"a?.b;
+"
+`;
+
+exports[`assigning in a class method key puts the variable in the outer scope 1`] = `
+"var a;
+class A {
+  [a = 'foo']() {
+    return 3;
+  }
+};
+"
+`;
+
+exports[`assigning in an object method key puts the variable in the outer scope 1`] = `
+"var a;
+var o = {
+  [a = 'foo']() {
+    return 3;
+  }
+};
+"
+`;
+
+exports[`assigning to the same name as in a nested scope creates declarations for each scope 1`] = `
+"function foo() {
+  var a = 1;
+}
+
+var a = 2;
+"
+`;
+
+exports[`combines variables hoisted from separate declarations 1`] = `
+"var a, e;
+[a, b.c] = d;
+[e, f.g] = h;
+"
+`;
+
+exports[`correctly handles a multi-assignment where a variable occurs more than once 1`] = `
+"var a;
+a = 1, a = 2;
+"
+`;
+
+exports[`creates declarations for array destructuring with eligible names 1`] = `
+"var [a, b] = c;
+"
+`;
+
+exports[`creates declarations for expression assignments inside the block scope 1`] = `
+"{
+  var a;
+  console.log(a = 1);
+}"
+`;
+
+exports[`creates declarations for object destructuring assignment 1`] = `
+"var { a, b } = c;
+"
+`;
+
+exports[`creates declarations for sequences inside a \`for\` loop init 1`] = `
+"for (var i = 0, length = list.length; i < length; i++) {
+  console.log(list[i]);
+}
+"
+`;
+
+exports[`creates declarations in \`while\` loop blocks 1`] = `
+"while (true) {
+  var a;
+  b(a = 1);
+}
+"
+`;
+
+exports[`creates declarations inside the block scope 1`] = `
+"{
+  var a = 1;
+}"
+`;
+
+exports[`creates declarations within arrow function blocks 1`] = `
+"() => {
+  var a = 1;
+};
+"
+`;
+
+exports[`creates variable declaration inside \`for\` loop init 1`] = `
+"for (var i = 0; i < 10; i++) {
+  console.log(i);
+}
+"
+`;
+
+exports[`creates variable declaration inside \`for-in\` loop init 1`] = `
+"for (var k in obj) {
+  console.log(k);
+}
+"
+`;
+
+exports[`creates variable declaration inside \`for-of\` loop init 1`] = `
+"for (var e of l) {
+  console.log(e);
+}
+"
+`;
+
+exports[`creates variable declaration with a destructured for-of partly already declared 1`] = `
+"var b;
+var a = null;
+for ({a, b} of c) {
+  continue;
+};
+"
+`;
+
+exports[`creates variable declarations for assignments in expression contexts in arrow function blocks 1`] = `
+"() => {
+  var b;
+  a(b = 1);
+};
+"
+`;
+
+exports[`declares variables for rest assignments before the destructure if necessary 1`] = `
+"var c;
+[a.b, ...c] = d;
+"
+`;
+
+exports[`does not add declarations for compound assignment 1`] = `
+"a += 1;
+a -= 1;
+a /= 1;
+a *= 1;
+a %= 1;
+a &= 1;
+a |= 1;
+a ^= 1;
+"
+`;
+
+exports[`does not add declarations for variable reassignments 1`] = `
+"var a = 0;
+let b = 1;
+a = 2;
+b = 3;
+"
+`;
+
+exports[`does not create declarations for variables created in nested declarations in parent scopes 1`] = `
+"var a;
+if (true) {
+  a = 0;
+} else {
+  a = 1;
+}
+function setA(value) {
+  a = value;
+}
+"
+`;
+
+exports[`does not create declarations for variables created in parent scopes 1`] = `
+"var a = 0;
+function setA(value) {
+  a = value;
+}
+"
+`;
+
+exports[`does not create inline declarations for sequence expressions with reassignments 1`] = `
+"var b;
+let a;
+a = 1, b = 2;
+"
+`;
+
+exports[`does not hoist a variable used by two sibling arrow functions 1`] = `
+"var f1 = () => {
+  var a = 1;
+};
+var f2 = () => {
+  var a = 2;
+};
+"
+`;
+
+exports[`does not hoist a variable used by two sibling functions 1`] = `
+"var f1 = function () {
+  var a = 1;
+};
+var f2 = function () {
+  var a = 2;
+};
+"
+`;
+
+exports[`does not insert var inline when a comma assignment is in an arg 1`] = `
+"var b, c;
+a((b = 1, c = 2));
+"
+`;
+
+exports[`handles source code intended for modules 1`] = `
+"// this should parse since we set sourceType: 'module'
+import foo from 'foo';
+"
+`;
+
+exports[`hoists variables when the most specific scope is an intermediate scope 1`] = `
+"if (true) {
+  var x;
+  if (true) {
+    x = 1;
+  } else {
+    x = 2;
+  }
+}
+"
+`;
+
+exports[`hoists variables when they are used in a more shallow scope 1`] = `
+"var x;
+if (true) {
+  x = 2;
+}
+console.log(x);
+"
+`;
+
+exports[`ignores assignments to member expressions 1`] = `
+"a.b = 1;
+"
+`;
+
+exports[`ignores object destructuring that does not create variables 1`] = `
+"({ a: b.c } = d);
+"
+`;
+
+exports[`inserts \`var\` before a top-level identifier assignment as a statement 1`] = `
+"var a = 1;
+"
+`;
+
+exports[`inserts \`var\` before an assignment within a function 1`] = `
+"function add(a, b) {
+  var result = a + b;
+  return result;
+}
+"
+`;
+
+exports[`multiple assignments in nested scopes hoists to shared scope 1`] = `
+"var r;
+if (a) {
+  if (b) {
+    r = 0;
+  } else {
+    r = 1;
+  }
+} else {
+  r = 2;
+}
+"
+`;
+
+exports[`non inline declations within the method scope 1`] = `
+"({
+  foo() {
+    var a;
+    bar(a = 1);
+  }
+})
+"
+`;
+
+exports[`parses class property assignment, but does not consider them as assignment expressions 1`] = `
+"class A {
+  b = 1;
+}
+"
+`;
+
+exports[`reassignment of parameters does not add declarations 1`] = `
+"function foo(a) {
+  a = 1;
+}
+"
+`;
+
+exports[`removes parens around a comma expression 1`] = `
+"var a = 1, b = 2;
+"
+`;
+
+exports[`safely converts array destructuring with a new variable and a property assignment 1`] = `
+"var a;
+[a, b.c] = d;
+"
+`;
+
+exports[`safely converts array destructuring with a new variable and a property assignment as a loop assignee 1`] = `
+"var a;
+for ([a, b.c] of d) {
+}
+"
+`;
+
+exports[`safely converts array destructuring with a new variable and a property assignment within a sequence expression 1`] = `
+"var a, d;
+for ([a, b.c] = [1, 2], d = 3; false;) {
+}
+"
+`;
+
+exports[`safely converts object destructuring where not all assignments create variables 1`] = `
+"var a;
+({ a, b: c.d } = e);
+"
+`;
+
+exports[`skips the variable declaration for a rest assignment that is destructured 1`] = `
+"var a, b;
+[a, ...[b]] = d;
+"
+`;
+
+exports[`skips the variable declaration for a rest assignment to a property access 1`] = `
+"var a;
+[a, ...b.c] = d;
+"
+`;
+
+exports[`turns a sequence expression into declaration when all expressions are eligible 1`] = `
+"var a = 1, b = 2;
+"
+`;
