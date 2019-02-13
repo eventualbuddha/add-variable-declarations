@@ -33,5 +33,9 @@ export default function getBindingIdentifiersFromLHS(node: t.Node): Array<t.Iden
     return getBindingIdentifiersFromLHS(node.argument);
   }
 
+  if (t.isAssignmentPattern(node)) {
+    return getBindingIdentifiersFromLHS(node.left);
+  }
+
   return [];
 }

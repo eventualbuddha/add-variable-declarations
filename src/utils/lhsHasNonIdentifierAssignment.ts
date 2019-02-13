@@ -33,5 +33,9 @@ export default function lhsHasNonIdentifierAssignment(node: t.Node): boolean {
     return !t.isIdentifier(node.argument);
   }
 
+  if (t.isAssignmentPattern(node)) {
+    return lhsHasNonIdentifierAssignment(node.left);
+  }
+
   return true;
 }
