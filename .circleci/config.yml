@@ -20,7 +20,7 @@ aliases:
       - *save_cache_step
       - run:
           name: tests
-          command: "yarn jest --ci"
+          command: "yarn jest --ci --reporters=default --reporters=jest-junit"
           environment:
             JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
       - store_test_results:
