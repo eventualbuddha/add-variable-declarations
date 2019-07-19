@@ -40,14 +40,14 @@
     "typescript": "^3.3.3"
   },
   "dependencies": {
-    "@babel/parser": "^7.5.0",
-    "@babel/traverse": "^7.5.0",
-    "@babel/types": "^7.5.0",
+    "@babel/parser": "^7.5.5",
+    "@babel/traverse": "^7.5.5",
+    "@babel/types": "^7.5.5",
     "@types/babel__traverse": "^7.0.7",
-    "magic-string": "0.25.2"
+    "magic-string": "^0.25.3"
   },
   "resolutions": {
-    "**/@babel/types": "7.5.0"
+    "**/@babel/types": "7.5.5"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
