@@ -167,7 +167,7 @@ export default class TraverseState {
    * declarations at the right places.
    */
   commitDeclarations(editor: MagicString, source: string, tokens: Array<Token>) {
-    let usedNames = new Set();
+    let usedNames = new Set<string>();
     // Defer `var` insertions so that magic-string will insert things in the
     // right order.
     let varInsertionPoints: Array<number> = [];
