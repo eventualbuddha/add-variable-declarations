@@ -4,7 +4,7 @@ import getBindingIdentifiersFromLHS from './utils/getBindingIdentifiersFromLHS';
 import lhsHasNonIdentifierAssignment from './utils/lhsHasNonIdentifierAssignment';
 import traverse, { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
-import { parse, ParserPlugin } from '@babel/parser';
+import { parse, ParserPlugin, ParserOptions } from '@babel/parser';
 
 // Extracted from magic-string/index.d.ts.
 export type SourceMap = {
@@ -31,6 +31,9 @@ export default function addVariableDeclarations(
     ] as Array<ParserPlugin>,
     sourceType: 'module',
     allowReturnOutsideFunction: true,
+    // TODO: remove this `keyof` hack once `allowUndeclaredExports` is included in typings
+    // https://github.com/babel/babel/pull/10263
+    ['allowUndeclaredExports' as keyof ParserOptions]: true,
     tokens: true,
   })
 ): { code: string, map: SourceMap } {
