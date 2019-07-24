@@ -278,6 +278,11 @@ a((b = 1, c = 2));
 "
 `;
 
+exports[`ensures parsing undeclared exports works 1`] = `
+"export { a };
+"
+`;
+
 exports[`handles source code intended for modules 1`] = `
 "// this should parse since we set sourceType: 'module'
 import foo from 'foo';
