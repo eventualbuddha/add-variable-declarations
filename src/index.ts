@@ -4,7 +4,7 @@ import getBindingIdentifiersFromLHS from './utils/getBindingIdentifiersFromLHS';
 import lhsHasNonIdentifierAssignment from './utils/lhsHasNonIdentifierAssignment';
 import traverse, { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
-import { parse, ParserPlugin, ParserOptions } from '@babel/parser';
+import { parse } from '@codemod/parser';
 
 // Extracted from magic-string/index.d.ts.
 export type SourceMap = {
@@ -15,27 +15,7 @@ export type SourceMap = {
 export default function addVariableDeclarations(
   source: string,
   editor = new MagicString(source),
-  ast: t.File = parse(source, {
-    plugins: [
-      'jsx',
-      'flow',
-      'doExpressions',
-      'objectRestSpread',
-      ['decorators', { decoratorsBeforeExport: true }],
-      'classProperties',
-      'asyncGenerators',
-      'functionBind',
-      'functionSent',
-      'dynamicImport',
-      'optionalChaining',
-    ] as Array<ParserPlugin>,
-    sourceType: 'module',
-    allowReturnOutsideFunction: true,
-    // TODO: remove this `keyof` hack once `allowUndeclaredExports` is included in typings
-    // https://github.com/babel/babel/pull/10263
-    ['allowUndeclaredExports' as keyof ParserOptions]: true,
-    tokens: true,
-  })
+  ast: t.File = parse(source, { tokens: true })
 ): { code: string, map: SourceMap } {
   let state: TraverseState | null = null;
   let savedStates: Array<TraverseState> = [];
