@@ -41,7 +41,7 @@
     "typescript": "^3.6.3"
   },
   "dependencies": {
-    "@babel/traverse": "^7.6.2",
+    "@babel/traverse": "^7.7.0",
     "@babel/types": "^7.6.1",
     "@codemod/parser": "^1.0.3",
     "magic-string": "^0.25.3"
