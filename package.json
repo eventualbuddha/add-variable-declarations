@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@babel/traverse": "^7.7.4",
-    "@babel/types": "^7.6.1",
+    "@babel/types": "^7.7.4",
     "@codemod/parser": "^1.0.3",
     "magic-string": "^0.25.3"
   },
