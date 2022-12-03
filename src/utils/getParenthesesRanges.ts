@@ -1,7 +1,10 @@
 import { Node } from '@babel/types';
 import { Token } from '../types';
 
-export default function getParenthesesRanges(node: Node, tokens: Array<Token>): Array<{ start: number, end: number }> {
+export default function getParenthesesRanges(
+  node: Node,
+  tokens: Array<Token>
+): Array<{ start: number; end: number }> {
   let leftParenTokens = [];
   let rightParenTokens = [];
 
@@ -27,18 +30,21 @@ export default function getParenthesesRanges(node: Node, tokens: Array<Token>): 
     }
   }
 
-  if (leftParenTokens.length === 0 || leftParenTokens.length !== rightParenTokens.length) {
+  if (
+    leftParenTokens.length === 0 ||
+    leftParenTokens.length !== rightParenTokens.length
+  ) {
     return [];
   }
 
   return [
     {
       start: leftParenTokens[0].start,
-      end: leftParenTokens[leftParenTokens.length - 1].end
+      end: leftParenTokens[leftParenTokens.length - 1].end,
     },
     {
       start: rightParenTokens[0].start,
-      end: rightParenTokens[rightParenTokens.length - 1].end
-    }
+      end: rightParenTokens[rightParenTokens.length - 1].end,
+    },
   ];
 }

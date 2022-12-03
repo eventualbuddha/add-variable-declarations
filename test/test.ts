@@ -6,9 +6,14 @@ readdirSync(join(__dirname, 'fixtures')).forEach(testFixture);
 
 function testFixture(name: string) {
   let config = requireFixtureModule(name, 'config.js');
-  (config.skip ? test.skip : config.only ? test.only : test)(config.description, () => {
-    expect(refactor(readFixtureFile(name, 'input.js')).code).toMatchSnapshot();
-  });
+  (config.skip ? test.skip : config.only ? test.only : test)(
+    config.description,
+    () => {
+      expect(
+        refactor(readFixtureFile(name, 'input.js')).code
+      ).toMatchSnapshot();
+    }
+  );
 }
 
 interface Fixture {

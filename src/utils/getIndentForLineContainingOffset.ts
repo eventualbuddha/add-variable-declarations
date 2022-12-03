@@ -1,4 +1,7 @@
-export default function getIndentForLineContainingOffset(source: string, offset: number): string {
+export default function getIndentForLineContainingOffset(
+  source: string,
+  offset: number
+): string {
   let lastNewlineIndex = source.lastIndexOf('\n', offset);
 
   for (let i = lastNewlineIndex + 1; i < source.length; i++) {
