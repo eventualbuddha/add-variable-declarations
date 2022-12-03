@@ -41,10 +41,10 @@
     "typescript": "^3.6.3"
   },
   "dependencies": {
-    "@babel/traverse": "^7.6.2",
-    "@babel/types": "^7.6.1",
-    "@codemod/parser": "^1.0.3",
-    "magic-string": "^0.25.3"
+    "@babel/traverse": "^7.20.5",
+    "@babel/types": "^7.20.5",
+    "@codemod/parser": "^1.2.1",
+    "magic-string": "^0.26.7"
   },
   "resolutions": {
     "**/@babel/types": "7.6.1"
