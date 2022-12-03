@@ -1,9 +1,9 @@
-import MagicString from 'magic-string';
-import { isFunction, Node } from '@babel/types';
 import { Scope } from '@babel/traverse';
+import { isFunction, Node } from '@babel/types';
+import MagicString from 'magic-string';
 import { Token } from '../types';
-import getFirstStatementInBlock from './getFirstStatementInBlock';
 import buildDeclarationForNames from './buildDeclarationForNames';
+import getFirstStatementInBlock from './getFirstStatementInBlock';
 import getParenthesesRanges from './getParenthesesRanges';
 
 /**
@@ -40,7 +40,7 @@ export type InlineBindingState = {
   node: Node;
   bindings: Array<BindingState>;
   shouldRemoveParens: boolean;
-}
+};
 
 /**
  * Mutable structure containing the current declarations in the traversal. Each
@@ -59,7 +59,7 @@ export default class TraverseState {
   ownedBindings: Map<string, BindingState> = new Map();
   ownedInlineBindings: Array<InlineBindingState> = [];
 
-  constructor(scope: Scope, parentState: TraverseState | null=null) {
+  constructor(scope: Scope, parentState: TraverseState | null = null) {
     this.scope = scope;
     this.parentState = parentState;
   }
@@ -99,13 +99,22 @@ export default class TraverseState {
    * (in which case we immediately know that we won't be able to do an inline
    * binding).
    */
-  addInlineBinding(node: Node, names: Array<string>, {shouldRemoveParens}: {shouldRemoveParens: boolean}) {
+  addInlineBinding(
+    node: Node,
+    names: Array<string>,
+    { shouldRemoveParens }: { shouldRemoveParens: boolean }
+  ) {
     if (names.length === 0) {
       return;
     }
     // This is only eligible as an inline binding if every name is distinct and not yet taken.
-    if (names.every(name => this.resolveName(name) === 'NOT_FOUND') && new Set(names).size === names.length) {
-      let newBindings = names.map(name => this.createBinding(name, this.scope));
+    if (
+      names.every((name) => this.resolveName(name) === 'NOT_FOUND') &&
+      new Set(names).size === names.length
+    ) {
+      let newBindings = names.map((name) =>
+        this.createBinding(name, this.scope)
+      );
       let bindingOwner = this.getEnclosingBindingOwner();
       bindingOwner.ownedInlineBindings.push({
         node,
@@ -122,7 +131,9 @@ export default class TraverseState {
   createBinding(name: string, scope: Scope): BindingState {
     let bindingOwner = this.getEnclosingBindingOwner();
     if (bindingOwner.ownedBindings.has(name)) {
-      throw new Error('Tried to create a binding for a name that is already taken.');
+      throw new Error(
+        'Tried to create a binding for a name that is already taken.'
+      );
     }
     let newState = new BindingState(name, scope);
     bindingOwner.ownedBindings.set(name, newState);
@@ -166,16 +177,22 @@ export default class TraverseState {
    * we need for variables scoped to this function, so we can insert the `var`
    * declarations at the right places.
    */
-  commitDeclarations(editor: MagicString, source: string, tokens: Array<Token>) {
+  commitDeclarations(
+    editor: MagicString,
+    source: string,
+    tokens: Array<Token>
+  ) {
     let usedNames = new Set<string>();
     // Defer `var` insertions so that magic-string will insert things in the
     // right order.
     let varInsertionPoints: Array<number> = [];
     for (let inlineBinding of this.ownedInlineBindings) {
-      if (inlineBinding.bindings.every(binding => binding.isInOriginalPosition)) {
+      if (
+        inlineBinding.bindings.every((binding) => binding.isInOriginalPosition)
+      ) {
         let { node, shouldRemoveParens } = inlineBinding;
         if (shouldRemoveParens) {
-          for (let {start, end} of getParenthesesRanges(node, tokens)) {
+          for (let { start, end } of getParenthesesRanges(node, tokens)) {
             editor.remove(start, end);
           }
         }
@@ -186,7 +203,9 @@ export default class TraverseState {
       }
     }
 
-    for (let [scope, names] of this.getBindingNamesByScope(usedNames).entries()) {
+    for (let [scope, names] of this.getBindingNamesByScope(
+      usedNames
+    ).entries()) {
       let firstStatement = this.getFirstStatementForScope(scope);
       if (firstStatement) {
         editor.appendLeft(

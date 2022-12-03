@@ -1,10 +1,10 @@
-import MagicString from 'magic-string';
-import TraverseState from './utils/TraverseState';
-import getBindingIdentifiersFromLHS from './utils/getBindingIdentifiersFromLHS';
-import lhsHasNonIdentifierAssignment from './utils/lhsHasNonIdentifierAssignment';
 import traverse, { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import { parse } from '@codemod/parser';
+import MagicString from 'magic-string';
+import getBindingIdentifiersFromLHS from './utils/getBindingIdentifiersFromLHS';
+import lhsHasNonIdentifierAssignment from './utils/lhsHasNonIdentifierAssignment';
+import TraverseState from './utils/TraverseState';
 
 // Extracted from magic-string/index.d.ts.
 export type SourceMap = {
@@ -16,15 +16,17 @@ export default function addVariableDeclarations(
   source: string,
   editor = new MagicString(source),
   ast: t.File = parse(source, { tokens: true })
-): { code: string, map: SourceMap } {
+): { code: string; map: SourceMap } {
   let state: TraverseState | null = null;
   let savedStates: Array<TraverseState> = [];
   let seen = new Set<t.Node>();
 
-  function visitForStatement(path: NodePath<t.ForInStatement | t.ForOfStatement>): void {
+  function visitForStatement(
+    path: NodePath<t.ForInStatement | t.ForOfStatement>
+  ): void {
     let state = getState();
     let { node } = path;
-    let names = getBindingIdentifiersFromLHS(node.left).map(id => id.name);
+    let names = getBindingIdentifiersFromLHS(node.left).map((id) => id.name);
     if (lhsHasNonIdentifierAssignment(node.left)) {
       for (let name of names) {
         state.addBinding(name);
@@ -55,11 +57,11 @@ export default function addVariableDeclarations(
       }
 
       let state = getState();
-      let names = getBindingIdentifiersFromLHS(node.left).map(id => id.name);
-      let canInsertVar = !lhsHasNonIdentifierAssignment(node.left) && (
-        t.isExpressionStatement(path.parent) ||
-        (t.isForStatement(path.parent) && node === path.parent.init)
-      );
+      let names = getBindingIdentifiersFromLHS(node.left).map((id) => id.name);
+      let canInsertVar =
+        !lhsHasNonIdentifierAssignment(node.left) &&
+        (t.isExpressionStatement(path.parent) ||
+          (t.isForStatement(path.parent) && node === path.parent.init));
       if (canInsertVar) {
         state.addInlineBinding(node, names, { shouldRemoveParens: true });
       } else {
@@ -106,8 +108,10 @@ export default function addVariableDeclarations(
       let { node } = path;
       let names = [];
 
-      if (!t.isExpressionStatement(path.parent) &&
-          !(t.isForStatement(path.parent) && node === path.parent.init)) {
+      if (
+        !t.isExpressionStatement(path.parent) &&
+        !(t.isForStatement(path.parent) && node === path.parent.init)
+      ) {
         return;
       }
 
@@ -126,11 +130,11 @@ export default function addVariableDeclarations(
           return;
         }
 
-        names.push(...identifiers.map(identifier => identifier.name));
+        names.push(...identifiers.map((identifier) => identifier.name));
       }
 
       state.addInlineBinding(node, names, { shouldRemoveParens: true });
-      node.expressions.forEach(expression => seen.add(expression));
+      node.expressions.forEach((expression) => seen.add(expression));
     },
 
     enter(path: NodePath<t.Node>) {
@@ -143,8 +147,10 @@ export default function addVariableDeclarations(
       // if we use the usual scope enter and exit hooks. To work around this,
       // pretend to be one scope higher while in the key, then restore the state
       // afterward.
-      if ((t.isObjectMethod(path.parent) && path.key === 'key') ||
-          (t.isClassMethod(path.parent) && path.key === 'key')) {
+      if (
+        (t.isObjectMethod(path.parent) && path.key === 'key') ||
+        (t.isClassMethod(path.parent) && path.key === 'key')
+      ) {
         savedStates.push(getState());
         state = getState().parentState;
       }
@@ -153,13 +159,19 @@ export default function addVariableDeclarations(
     exit(path: NodePath<t.Node>) {
       if (t.isScopable(path.node)) {
         if (state) {
-          state.commitDeclarations(editor, source, ast.tokens);
+          state.commitDeclarations(
+            editor,
+            source,
+            ast.tokens?.filter(Boolean) ?? []
+          );
           state = state.parentState;
         }
       }
 
-      if ((t.isObjectMethod(path.parent) && path.key === 'key') ||
-          (t.isClassMethod(path.parent) && path.key === 'key')) {
+      if (
+        (t.isObjectMethod(path.parent) && path.key === 'key') ||
+        (t.isClassMethod(path.parent) && path.key === 'key')
+      ) {
         state = savedStates.pop() || null;
       }
     },
@@ -175,7 +187,6 @@ export default function addVariableDeclarations(
 
   return {
     code: editor.toString(),
-    map: editor.generateMap()
+    map: editor.generateMap(),
   };
 }
-

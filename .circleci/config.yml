@@ -20,31 +20,21 @@ aliases:
       - *save_cache_step
       - run:
           name: tests
-          command: "yarn jest --ci --reporters=default --reporters=jest-junit"
-          environment:
-            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
-      - store_test_results:
-          path: reports/junit
-      - store_artifacts:
-          path: reports/junit
+          command: 'yarn jest --ci --reporters=default'
 
 version: 2
 jobs:
-  node-v10-latest:
+  node-v14-latest:
     docker:
-      - image: circleci/node:10
+      - image: cimg/node:14.21
     <<: *unit_test
-  node-v11-latest:
+  node-v16-latest:
     docker:
-      - image: circleci/node:11
+      - image: cimg/node:16.18
     <<: *unit_test
-  node-v12-latest:
+  node-v18-latest:
     docker:
-      - image: circleci/node:12
-    <<: *unit_test
-  node-v13-latest:
-    docker:
-      - image: circleci/node:13
+      - image: cimg/node:18.12
     <<: *unit_test
   deploy:
     docker:
@@ -62,16 +52,14 @@ workflows:
   version: 2
   test-deploy:
     jobs:
-      - node-v10-latest
-      - node-v11-latest
-      - node-v12-latest
-      - node-v13-latest
+      - node-v14-latest
+      - node-v16-latest
+      - node-v18-latest
       - deploy:
           requires:
-            - node-v10-latest
-            - node-v11-latest
-            - node-v12-latest
-            - node-v13-latest
+            - node-v14-latest
+            - node-v16-latest
+            - node-v18-latest
           filters:
             branches:
               only: master
