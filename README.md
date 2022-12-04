@@ -14,7 +14,7 @@ $ npm install add-variable-declarations
 ## Usage
 
 ```js
-import addVariableDeclarations from 'add-variable-declarations';
+import { addVariableDeclarations } from 'add-variable-declarations';
 
 const source = `
 PI = 3.14;

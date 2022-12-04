@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
-import refactor from '../src/index';
+import { addVariableDeclarations } from '../src/index';
 
 readdirSync(join(__dirname, 'fixtures')).forEach(testFixture);
 
@@ -10,7 +10,7 @@ function testFixture(name: string) {
     config.description,
     () => {
       expect(
-        refactor(readFixtureFile(name, 'input.js')).code
+        addVariableDeclarations(readFixtureFile(name, 'input.js')).code
       ).toMatchSnapshot();
     }
   );

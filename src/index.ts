@@ -12,7 +12,7 @@ export type SourceMap = {
   toUrl(): string;
 };
 
-export default function addVariableDeclarations(
+export function addVariableDeclarations(
   source: string,
   editor = new MagicString(source),
   ast: t.File = parse(source, { tokens: true })
