@@ -1,11 +1,11 @@
+import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
-import { readFileSync, readdirSync } from 'fs';
 import refactor from '../src/index';
 
 readdirSync(join(__dirname, 'fixtures')).forEach(testFixture);
 
 function testFixture(name: string) {
-  let config = requireFixtureModule(name, 'config.js');
+  let config = requireFixtureModule(name, 'config.ts');
   (config.skip ? test.skip : config.only ? test.only : test)(
     config.description,
     () => {
