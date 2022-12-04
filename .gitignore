@@ -2,6 +2,7 @@
 node_modules
 
 # ignore generated fixture data
+dist
 _actual*
 
 # ignore TypeScript build files
