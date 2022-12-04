@@ -38,7 +38,7 @@ jobs:
     <<: *unit_test
   deploy:
     docker:
-      - image: circleci/node:latest
+      - image: cimg/node:latest
     steps:
       - checkout
       - *restore_cache_step
