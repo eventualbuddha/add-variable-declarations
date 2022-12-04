@@ -106,7 +106,7 @@ export default function addVariableDeclarations(
     SequenceExpression(path: NodePath<t.SequenceExpression>) {
       let state = getState();
       let { node } = path;
-      let names = [];
+      let names: Array<string> = [];
 
       if (
         !t.isExpressionStatement(path.parent) &&

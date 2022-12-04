@@ -5,8 +5,8 @@ export default function getParenthesesRanges(
   node: Node,
   tokens: Array<Token>
 ): Array<{ start: number; end: number }> {
-  let leftParenTokens = [];
-  let rightParenTokens = [];
+  let leftParenTokens: Array<Token> = [];
+  let rightParenTokens: Array<Token> = [];
 
   for (let i = 0; i < tokens.length; i++) {
     let token = tokens[i];
