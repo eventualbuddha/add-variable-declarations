@@ -31,7 +31,7 @@ console.log(addVariableDeclarations(source).code);
 ## Development
 
 1. Clone the repository.
-   > `git@github.com:eventualbuddha/add-variable-declarations.git`
+   > `https://github.com/eventualbuddha/add-variable-declarations.git`
 1. Install dependencies.
    > `yarn install`
 1. Make edits and re-build.
