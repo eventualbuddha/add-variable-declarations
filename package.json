@@ -51,7 +51,7 @@
     "@babel/traverse": "^7.20.5",
     "@babel/types": "^7.20.5",
     "@codemod/parser": "^1.2.1",
-    "magic-string": "^0.26.7"
+    "magic-string": "^0.30.0"
   },
   "resolutions": {
     "**/@babel/types": "7.20.5"
