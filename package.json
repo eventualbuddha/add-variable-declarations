@@ -54,7 +54,7 @@
     "magic-string": "^0.30.0"
   },
   "resolutions": {
-    "**/@babel/types": "7.22.15"
+    "**/@babel/types": "7.22.17"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
