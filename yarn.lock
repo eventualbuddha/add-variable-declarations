@@ -782,9 +782,9 @@
   integrity sha512-2qGq5LAOTh9izcc0+F+dToFigBWiK1phKPt7rNhOqJSr35y8rlIBjDwGtFSgAI6MGIhjwOVNSQZVdJsZJ2uR1w==
 
 "@types/node@^18.0.0":
-  version "18.18.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.18.0.tgz#bd19d5133a6e5e2d0152ec079ac27c120e7f1763"
-  integrity sha512-3xA4X31gHT1F1l38ATDIL9GpRLdwVhnEFC8Uikv5ZLlXATwrCYyPq7ZWHxzxc3J/30SUiwiYT+bQe0/XvKlWbw==
+  version "18.18.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.18.1.tgz#80b22f3df719f15c9736207980e95f35d01ec1aa"
+  integrity sha512-3G42sxmm0fF2+Vtb9TJQpnjmP+uKlWvFa8KoEGquh4gqRmoUG/N0ufuhikw6HEsdG2G2oIKhog1GCTfz9v5NdQ==
 
 "@types/stack-utils@^2.0.0":
   version "2.0.1"
@@ -797,9 +797,9 @@
   integrity sha512-axdPBuLuEJt0c4yI5OZssC19K2Mq1uKdrfZBzuxLvaztgqUtFYZUNw7lETExPYJR9jdEoIg4mb7RQKRQzOkeGQ==
 
 "@types/yargs@^17.0.8":
-  version "17.0.25"
-  resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-17.0.25.tgz#3edd102803c97356fb4c805b2bbaf7dfc9ab6abc"
-  integrity sha512-gy7iPgwnzNvxgAEi2bXOHWCVOG6f7xsprVJH4MjlAWeBmJ7vh/Y1kwMtUrs64ztf24zVIRCpr3n/z6gm9QIkgg==
+  version "17.0.26"
+  resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-17.0.26.tgz#388e5002a8b284ad7b4599ba89920a6d74d8d79a"
+  integrity sha512-Y3vDy2X6zw/ZCumcwLpdhM5L7jmyGpmBCTYMHDLqT2IKVMYRRLdv6ZakA+wxhra6Z/3bwhNbNl9bDGXaFU+6rw==
   dependencies:
     "@types/yargs-parser" "*"
 
