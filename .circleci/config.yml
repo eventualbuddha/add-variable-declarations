@@ -34,11 +34,11 @@ jobs:
     <<: *unit_test
   node-v18-latest:
     docker:
-      - image: cimg/node:18.18
+      - image: cimg/node:18.19
     <<: *unit_test
   deploy:
     docker:
-      - image: cimg/node:18.18
+      - image: cimg/node:18.19
     steps:
       - checkout
       - *restore_cache_step
