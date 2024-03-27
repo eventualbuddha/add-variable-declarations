@@ -30,7 +30,7 @@ jobs:
     <<: *unit_test
   node-v18-latest:
     docker:
-      - image: cimg/node:18.19
+      - image: cimg/node:18.20
     <<: *unit_test
   node-v20-latest:
     docker:
