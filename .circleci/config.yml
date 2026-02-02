@@ -26,19 +26,19 @@ version: 2
 jobs:
   node-v16-latest:
     docker:
-      - image: cimg/node:16.20
+      - image: cimg/node:16.20.2
     <<: *unit_test
   node-v18-latest:
     docker:
-      - image: cimg/node:18.20
+      - image: cimg/node:18.20.8
     <<: *unit_test
   node-v20-latest:
     docker:
-      - image: cimg/node:20.20
+      - image: cimg/node:20.20.0
     <<: *unit_test
   deploy:
     docker:
-      - image: cimg/node:20.20
+      - image: cimg/node:20.20.0
     steps:
       - checkout
       - *restore_cache_step
