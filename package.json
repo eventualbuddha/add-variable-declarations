@@ -48,13 +48,13 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@babel/traverse": "^7.20.5",
-    "@babel/types": "^7.20.5",
+    "@babel/traverse": "^8.0.0",
+    "@babel/types": "^8.0.0",
     "@codemod/parser": "^1.2.1",
     "magic-string": "^0.30.0"
   },
   "resolutions": {
-    "**/@babel/types": "7.29.8"
+    "**/@babel/types": "^8.0.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
